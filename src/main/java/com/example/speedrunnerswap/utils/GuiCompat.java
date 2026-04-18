@@ -1,0 +1,99 @@
+package com.example.speedrunnerswap.utils;
+
+import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Small helpers to bridge Adventure display names/lore with legacy ItemMeta getters.
+ */
+public final class GuiCompat {
+    private GuiCompat() {}
+
+    private static final InventoryHolder DEFAULT_HOLDER = new InventoryHolder() {
+        @Override
+        public Inventory getInventory() {
+            return null;
+        }
+    };
+
+    public static Inventory createInventory(InventoryHolder holder, int size, String title) {
+        InventoryHolder effective = (holder != null) ? holder : DEFAULT_HOLDER;
+        try {
+            return Bukkit.createInventory(effective, size, Component.text(title));
+        } catch (Throwable t) {
+            // Fallback to legacy title if Component API is unavailable
+            return createInventoryLegacy(effective, size, title);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private static Inventory createInventoryLegacy(InventoryHolder holder, int size, String title) {
+        InventoryHolder effective = (holder != null) ? holder : DEFAULT_HOLDER;
+        return Bukkit.createInventory(effective, size, title);
+    }
+
+    public static void setDisplayName(ItemMeta meta, String name) {
+        try {
+            meta.displayName(Component.text(name));
+        } catch (Throwable t) {
+            setDisplayNameLegacy(meta, name);
+        }
+    }
+
+    public static String getDisplayName(ItemMeta meta) {
+        try {
+            Component c = meta.displayName();
+            if (c != null) {
+                return net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText().serialize(c);
+            }
+        } catch (Throwable ignored) {}
+        return getDisplayNameLegacy(meta);
+        
+    }
+
+    public static void setLore(ItemMeta meta, List<String> legacyLore) {
+        try {
+            List<Component> list = new ArrayList<>();
+            for (String s : legacyLore) list.add(Component.text(s));
+            meta.lore(list);
+        } catch (Throwable t) {
+            setLoreLegacy(meta, legacyLore);
+        }
+    }
+
+    public static List<String> getLore(ItemMeta meta) {
+        try {
+            List<Component> comps = meta.lore();
+            if (comps != null) {
+                List<String> out = new ArrayList<>(comps.size());
+                var serializer = net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer.plainText();
+                for (Component c : comps) {
+                    out.add(serializer.serialize(c));
+                }
+                return out;
+            }
+        } catch (Throwable ignored) {}
+        return getLoreLegacy(meta);
+    }
+
+    @SuppressWarnings("deprecation")
+    private static void setDisplayNameLegacy(ItemMeta meta, String name) { meta.setDisplayName(name); }
+
+    @SuppressWarnings("deprecation")
+    private static String getDisplayNameLegacy(ItemMeta meta) { return meta.hasDisplayName() ? meta.getDisplayName() : null; }
+
+    @SuppressWarnings("deprecation")
+    private static void setLoreLegacy(ItemMeta meta, List<String> legacyLore) { meta.setLore(legacyLore); }
+
+    @SuppressWarnings("deprecation")
+    private static List<String> getLoreLegacy(ItemMeta meta) {
+        List<String> lore = meta.getLore();
+        return (lore != null) ? lore : java.util.Collections.emptyList();
+    }
+}

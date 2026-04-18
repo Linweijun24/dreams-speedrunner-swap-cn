@@ -1,0 +1,35 @@
+name: SpeedrunnerSwap
+version: '4.3.3'
+main: com.example.speedrunnerswap.SpeedrunnerSwap
+api-version: '1.21'
+authors: [muj4b]
+description: |
+  Dream-style challenge plugin with shared-body swap modes, optional shared hunter control, secret-task competitions, Task Master Duo, and a no-swap Task Race mode.
+  Features include:
+  - Random power-ups on swap
+  - Last Stand mode for final runner
+  - Custom kits for runners and hunters
+  - Configurable swap intervals
+  - Safe swap locations
+  - Hunter swap / shared hunter body system
+  - Task Master Duo with two shared sabotage bodies
+  - Compass tracking system
+  - Parallel no-swap task racing
+website: https://github.com/muj3b/minecraft-speedrunner-swap-plugin
+
+# Ensure we load after optional integrations if present
+softdepend: [SimpleVoiceChat, voicechat, Multiverse-Core, Multiverse-Inventories]
+
+commands:
+  swap:
+    description: Control Speedrunner Swap
+    usage: /<command>
+    permission: speedrunnerswap.admin
+    
+permissions:
+  speedrunnerswap.admin:
+    default: op
+    description: Full control over Speedrunner Swap plugin features
+  speedrunnerswap.command:
+    default: op
+    description: General access to view status/GUI where allowed
