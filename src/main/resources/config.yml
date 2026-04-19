@@ -1,0 +1,355 @@
+# SpeedrunnerSwap Configuration
+# Version 4.3
+
+# Teams Configuration
+teams:
+  runners: []  # List of runner player names
+  hunters: []  # List of hunter player names
+
+# Swap System Configuration
+swap:
+  # Fixed interval or random swap with Gaussian jitter
+  randomize: false
+  # Base interval in seconds (or mean if randomized)
+  interval: 60
+  # Enable experimental intervals (<30s and >max) via GUI toggle
+  beta_enabled: true
+  # Apply per-mode default interval when switching modes (if game not running)
+  apply_default_on_mode_switch: false
+  # Min and max interval in seconds (only used if randomize is true)
+  min_interval: 30
+  max_interval: 90
+  # Per-mode default intervals
+  default_intervals:
+    dream: 60
+    sapnap: 60
+    task: 60
+    task_duel: 60
+    task_race: 60
+  # Jitter settings (only used if randomize is true)
+  jitter:
+    # Standard deviation in seconds
+    stddev: 15
+    # Whether to clamp within min/max limits
+    clamp: true
+  # Grace period after swaps (in ticks, 20 ticks = 1 second)
+  grace_period_ticks: 40
+  # Auto-pause if a runner disconnects
+  pause_on_disconnect: true
+  # If true, apply the final active runner's state to all runners when ending the game
+  preserve_runner_progress_on_end: false
+  # Optional second shared body for Dream mode hunters
+  shared_hunter_control:
+    enabled: false
+    interval: 60
+  # Legacy full-team hunter shuffle (ignored while shared_hunter_control is enabled)
+  hunter_swap:
+    enabled: false
+    interval: 60
+  hot_potato_mode:
+    enabled: false
+
+# Safe Swap Configuration
+safe_swap:
+  # Whether to enable safe swap feature
+  enabled: false
+  # Horizontal scan radius (blocks)
+  horizontal_radius: 5
+  # Vertical scan distance (blocks)
+  vertical_distance: 10
+  # Dangerous blocks to avoid (material names)
+  dangerous_blocks:
+    - LAVA
+    - MAGMA_BLOCK
+    - CACTUS
+    - CAMPFIRE
+    - FIRE
+    - SOUL_FIRE
+    - SOUL_CAMPFIRE
+    - POINTED_DRIPSTONE
+
+# Freeze Mode for Inactive Runners
+# Options: EFFECTS, SPECTATOR, LIMBO, CAGE
+freeze_mode: CAGE
+
+# Limbo configuration
+limbo:
+  world: "world"
+  x: 0.5
+  y: 200.0
+  z: 0.5
+
+# Global spawn handling for post-game resets
+spawn:
+  force_global: true
+  world: "world"
+  x: 0.5
+  y: 64.0
+  z: 0.5
+
+# Multiworld / Multiverse compatibility
+multiworld:
+  enabled: true
+  # Keep runner respawns anchored to the active game's main world instead of the
+  # server's first world. Helps with Multiverse-Core and Multiverse-Inventories.
+  keep_runners_in_session_world: true
+  # Re-teleport runners shortly after respawn to win conflicts with plugins that
+  # apply a second location after PlayerRespawnEvent.
+  enforce_runner_respawn: true
+  enforce_runner_respawn_delay_ticks: 2
+  # When assigning teams from the GUI, show only players in the same world as
+  # the admin opening the menu.
+  filter_team_selector_to_viewer_world: true
+  # Prevent assigning runners/hunters from a different overworld than the
+  # current game session. Before a session world exists, the first runner
+  # assignment anchors it.
+  restrict_assignments_to_session_world: true
+  # If the active runner moves to another overworld-style world, adopt that as
+  # the session world for future respawns.
+  update_session_world_on_overworld_change: true
+
+# Movement and Interaction Control
+cancel:
+  # Cancel movement for inactive runners
+  movement: true
+  # Cancel interactions for inactive runners
+  interactions: true
+
+# Chat controls for inactive runners
+chat:
+  # Block chat messages from inactive runners during swaps (disabled by default)
+  restrict_inactive_runners: false
+
+# Tracker Configuration
+tracker:
+  # Whether to enable the compass tracker
+  enabled: true
+  # How often to update the compass (in ticks, 20 ticks = 1 second)
+  update_ticks: 20
+  # Retry logic when runners are inside portals to avoid unsafe swaps
+  portal_retry_attempts: 5
+  portal_retry_delay_ticks: 20
+  # Temporary compass jamming after swaps to give the new runner an escape window
+  compass_jamming:
+    enabled: false
+    # Duration of compass jamming in ticks (20 ticks = 1 second)
+    duration_ticks: 100
+    # Max random offset (in blocks) for jammed compass target
+    max_jam_distance: 500
+
+# GUI Configuration
+gui:
+  main_menu:
+    title: "速通者交换菜单"
+    rows: 3
+  team_selector:
+    title: "队伍选择器"
+    rows: 4
+  settings:
+    title: "设置"
+    rows: 5
+
+# Broadcast Configuration
+broadcasts:
+  # Whether to broadcast swap events to all players
+  enabled: true
+  # Whether to broadcast game start/stop events
+  game_events: true
+  # Whether to broadcast team changes
+  team_changes: true
+
+# End game messaging (titles/subtitles/broadcast)
+# Credits/support lines are intentionally not configurable.
+messages:
+  end_game:
+    runner:
+      title: "§a§l速通者胜利！"
+      subtitle_runner: "§e哥几个状态都拉满了啊，打得真不错"
+      subtitle_hunter: "§e哥几个状态都拉满了啊，打得真不错"
+    hunter:
+      title: "§c§l猎人胜利！"
+      subtitle_runner: "§e你的操作我只能给到拉完了"
+      subtitle_hunter: "§e这些速通者的操作真是拉完了"
+    none:
+      title: "§c§l游戏结束"
+      subtitle_runner: "§e未决出胜负者"
+      subtitle_hunter: "§e未决出胜负者"
+    # Placeholders:
+    # %winner% -> RUNNER team won! / HUNTER team won! / Game ended!
+    # %winner_team% -> RUNNER / HUNTER / NONE
+    broadcast: "§a[速通者交换] 游戏结束 %winner%"
+
+# Freeze Mechanic Configuration
+freeze_mechanic:
+  enabled: false
+  duration_ticks: 100  # 5 seconds
+  check_interval_ticks: 20
+  max_distance: 50
+  cage:
+    # If true, End players are caged in a non-End world (limbo/fallback world).
+    # Default false keeps cages in The End while still forcing them far from dragon activity.
+    avoid_cage_in_end: false
+    # In The End, if limbo X/Z is too close to 0,0, move cages out to this coordinate.
+    # This avoids interference with dragon landing/perch logic near the exit portal.
+    end_min_distance_from_origin: 256
+    end_safe_coordinate: 500
+    # If a dragon is nearby, push the cage to at least this horizontal distance.
+    end_min_distance_from_dragon: 500
+
+# Timer Visibility Configuration
+timer_visibility:
+  # Whether active runners see the timer
+  runner_visibility: "last_10"  # Options: "always", "last_10", "never"
+  # Whether waiting runners see the timer
+  waiting_visibility: "always"  # Options: "always", "last_10", "never"
+  # Whether hunters see the timer
+  hunter_visibility: "never"    # Options: "always", "last_10", "never"
+
+# UI update frequency (performance tuning)
+ui:
+  update_ticks:
+    # How often to update the actionbar for timers (in ticks)
+    actionbar: 20
+    # How often to update titles for waiting runners (in ticks)
+    title: 10
+
+# Cosmetic trail that follows the active runner
+particle_trail:
+  enabled: false
+  type: "DUST"
+  spawn_interval: 5
+  color: [255, 0, 0]
+
+# Simple Voice Chat Integration (if available)
+voice_chat:
+  # Whether to integrate with Simple Voice Chat
+  enabled: false
+  # Whether to mute inactive runners
+  mute_inactive_runners: true
+
+# Single Player Sleep Configuration
+single_player_sleep:
+  # If enabled, only the active runner can sleep to skip night
+  # This helps when other players are caged or frozen and can't sleep
+  # Enabled by default to prevent spectators from blocking night skip
+  enabled: true
+
+# Power-ups Configuration
+power_ups:
+  enabled: false
+  good_effects:
+    - SPEED
+    - DOLPHINS_GRACE
+    - REGENERATION
+    - NIGHT_VISION
+    - ABSORPTION
+  bad_effects:
+    - SLOWNESS
+    - WEAKNESS
+    - HUNGER
+    - DARKNESS
+    - GLOWING
+
+# Last Stand Configuration
+last_stand:
+  enabled: false
+  duration_ticks: 600 # 30 seconds
+  strength_amplifier: 1
+  speed_amplifier: 1
+
+# Kits Configuration
+# Note: Kits are configured in kits.yml
+kits:
+  enabled: false  # Controls whether the kit system is enabled
+
+# Advanced Stats Configuration
+stats:
+  enabled: true
+  distance_tracking: true
+  # How often to update distance traveled (in ticks)
+  distance_update_ticks: 20
+  # Whether to display stats periodically during the game
+  periodic_display: false
+  periodic_display_interval: 300 # 5 minutes
+
+# World Border Configuration
+world_border:
+  enabled: false
+  initial_size: 2000
+  final_size: 100
+  # Time in seconds for the border to shrink
+  shrink_duration: 1800 # 30 minutes
+  warning_distance: 50
+  # How often to display border warnings (in seconds)
+  warning_interval: 300 # 5 minutes
+
+# Bounty System Configuration
+bounty:
+  enabled: false
+  # Minimum time between bounties (in seconds)
+  cooldown: 300
+  # Duration of the glowing effect on the target (in seconds)
+  glow_duration: 300
+  # Rewards for successful bounty completion
+  rewards:
+    strength_duration: 300 # 5 minutes
+    speed_duration: 300 # 5 minutes
+
+# Sudden Death Configuration
+sudden_death:
+  enabled: false
+  # Time before sudden death activates (in seconds)
+  activation_delay: 1200 # 20 minutes
+  # Effects given to players in sudden death
+  effects:
+    resistance_duration: 200
+    regeneration_duration: 200
+  # Coordinates for the sudden death arena in The End
+  arena:
+    x: 100
+    y: 50
+    z: 0
+    # Maximum distance for random compass pointing when jammed
+    max_jam_distance: 100
+
+# Task Manager Configuration
+task_manager:
+  # Custom tasks that players can add to the task pool
+  # Each task needs a unique ID and description
+  custom_tasks:
+    # Example custom tasks - add your own below!
+    # - id: "build_wool_rainbow"
+    #   description: "Build a rainbow using all 16 colors of wool"
+    # - id: "survive_night_no_shelter"
+    #   description: "Survive an entire night without any shelter or armor"
+    # - id: "collect_100_flowers"
+    #   description: "Collect 100 flowers of any type"
+  # Whether to include default built-in tasks
+  include_default_tasks: true
+  # Maximum time for a task game (in minutes, 0 = no limit)
+  max_game_duration: 0
+  # Disconnect/rejoin behavior
+  pause_on_disconnect: true
+  rejoin_grace_seconds: 180
+  remove_on_timeout: true
+  allow_late_joiners: false
+  end_when_one_left: false
+  # Default assignment pool for new rounds
+  difficulty: MEDIUM
+  # Player-controlled task rerolls
+  reroll:
+    enabled: true
+    uses_per_player: 1
+    allow_before_start: true
+    allow_during_first_turn: true
+    # For Task Race only: how many seconds after round start players can reroll
+    task_race_window_seconds: 60
+  # Runtime state (do not edit manually unless you know what you're doing)
+  runtime:
+    assignments: {}
+    disconnect_times: {}
+
+# General game settings
+game:
+  # Default mode selected on server start: dream | sapnap | task | task_duel | task_race
+  default_mode: dream
