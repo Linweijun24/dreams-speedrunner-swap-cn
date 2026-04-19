@@ -6,10 +6,7 @@ https://github.com/muj3b/dreams-speedrunner-swap
 1.运行BUILD.bat文件
 2.将target/speedrunnerswap-4.3.3.jar复制到你服务端下的plugins文件夹里即可
 3.运行该服务端
-感谢他们的付出！
-原作者：muj3b
-汉化作者：Flynn
-
+本项目基于 muj3d 的 dreams-speedrunner-swap 修改，汉化及后续维护由 Flynn 提供
 本仓库遵循MIT协议
 
 # DESCRIPTION(English Version)
@@ -24,8 +21,6 @@ How to use:
 2.Copy target/speedrunnerswap-4.3.3.jar to the plugins folder of your server.
 3.Run the server.
 
-Thanks to their hard work!
-Original author: muj3b
-Localization author: Flynn
+This project is based on a modified version of muj3d's dreams-speedrunner-swap. Localization into Chinese and ongoing maintenance are provided by Flynn.
 
 This repository follows the MIT License.
