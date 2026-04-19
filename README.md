@@ -1,6 +1,6 @@
 # 描述
 这是一个dreams-speedrunner-swap的汉化版本
-如果我有条件，我将会及时跟进此插件与原插件插件的更新，感谢支持，这里贴上原仓库：
+如果我有条件，我将会及时将此汉化版本与原版插件兼容，感谢支持，这里贴上原仓库：
 https://github.com/muj3b/dreams-speedrunner-swap
 食用方法：
 1.运行BUILD.bat文件
